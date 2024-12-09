@@ -67,7 +67,7 @@ export default function App() {
         <Stack.Screen
           name="AddCourse"
           component={AddCourse}
-          options={{
+          options={({ navigation }) => ({
             title: "Añadir Curso",
             headerStyle: {
               backgroundColor: "#800025",
@@ -82,19 +82,20 @@ export default function App() {
                   name="arrow-back"
                   size={20}
                   color="white"
-                  style={{ 
-                    marginRight: 5, 
-                    marginLeft: 20, 
+                  style={{
+                    marginRight: 5,
+                    marginLeft: 20,
                   }}
                 />
               </TouchableOpacity>
             ),
-          }}
+            headerBackVisible: false, // Desactiva el retroceso por defecto
+          })}
         />
         <Stack.Screen 
           name="EditCourse" 
           component={EditCourse} 
-          options={{
+          options={({ navigation }) => ({
             title: "Editar Curso",
             headerStyle: {
               backgroundColor: "#800025",
@@ -109,14 +110,15 @@ export default function App() {
                   name="arrow-back"
                   size={20}
                   color="white"
-                  style={{ 
-                    marginRight: 5, 
-                    marginLeft: 20, 
+                  style={{
+                    marginRight: 5,
+                    marginLeft: 20,
                   }}
                 />
               </TouchableOpacity>
             ),
-          }}
+            headerBackVisible: false, // Desactiva el retroceso por defecto
+          })}
         />
       </Stack.Navigator>
     </NavigationContainer>

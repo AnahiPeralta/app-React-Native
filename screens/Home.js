@@ -7,10 +7,10 @@ import {
   TouchableOpacity,
   TextInput,
   ActivityIndicator,
-  ScrollView
+  ScrollView,
 } from "react-native";
 import { appFirebase, db } from "../credenciales";
-import { useNavigation } from "@react-navigation/native"
+import { useNavigation } from "@react-navigation/native";
 import Navbar from "../Components/Navbar";
 import TopNavbar from "../Components/TopNavbar";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -57,94 +57,100 @@ export default function Home() {
     <View style={styles.flexContent}>
       <View>
         <TopNavbar />
-        <View style={styles.maxWidth}>
-          <View style={styles.bannerContainer}>
-            <View style={styles.flexContainer}>
-              <View style={styles.textContain}>
-                <Text style={styles.textDefault}>Bienvenido</Text>
-                <Text style={styles.textDefaultTwo}>
-                  a la plataforma virtual
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          style={styles.scrollView}
+        >
+          <View style={styles.maxWidth}>
+            <View style={styles.bannerContainer}>
+              <View style={styles.flexContainer}>
+                <View style={styles.textContain}>
+                  <Text style={styles.textDefault}>Bienvenido</Text>
+                  <Text style={styles.textDefaultTwo}>
+                    a la plataforma virtual
+                  </Text>
+                </View>
+                <View style={styles.imageContainer}>
+                  <Image
+                    source={require("../assets/logo_principal.png")}
+                    style={styles.profile}
+                  />
+                </View>
+              </View>
+            </View>
+            <View style={styles.container}>
+              <View style={styles.containerText}>
+                <Text style={styles.title}>Cursos Activos</Text>
+                <Text style={styles.subtitle}>
+                  Accede a los cursos disponibles
                 </Text>
               </View>
-              <View style={styles.imageContainer}>
-                <Image
-                  source={require("../assets/logo_principal.png")}
-                  style={styles.profile}
+              <View style={styles.searchContainer}>
+                <TextInput
+                  style={styles.searchInput}
+                  placeholder="Buscar un curso..."
+                  placeholderTextColor="#8a8a8a"
+                  value={searchText}
+                  onChangeText={(text) => setSearchText(text)}
+                />
+                <Icon
+                  name="search"
+                  size={18}
+                  color="#000"
+                  style={styles.searchIcon}
                 />
               </View>
             </View>
-          </View>
-          <View style={styles.container}>
-            <View style={styles.containerText}>
-              <Text style={styles.title}>Cursos Activos</Text>
-              <Text style={styles.subtitle}>
-                Accede a los cursos disponibles
-              </Text>
-            </View>
-            <View style={styles.searchContainer}>
-              <TextInput
-                style={styles.searchInput}
-                placeholder="Buscar un curso..."
-                placeholderTextColor="#8a8a8a"
-                value={searchText}
-                onChangeText={(text) => setSearchText(text)}
+            {loading ? (
+              <ActivityIndicator
+                size="large"
+                color="#0000ff"
+                style={styles.loaderContainer}
               />
-              <Icon
-                name="search"
-                size={18}
-                color="#000"
-                style={styles.searchIcon}
-              />
-            </View>
-          </View>
-          {loading ? (
-            <ActivityIndicator
-              size="large"
-              color="#0000ff"
-              style={styles.loaderContainer}
-            />
-          ) : (
-            <ScrollView
-              contentContainerStyle={styles.scrollContent}
-              style={styles.scrollView}
-            >
-                <View style={styles.gridContent}>
-                  <View style={styles.grid}>
-                    {courses.length > 0 ? (
-                      courses.map((course) => (
-                        <View style={styles.cardsContent}>
-                          <View style={styles.cardImage}>
-                            <Image
-                              source={require("../assets/portada-course.png")}
-                              style={styles.imageCard}
-                            />
-                          </View>
-                          <View style={styles.cardText}>
-                            <Text style={styles.cardTarjet}>
-                              {course["carrer"]}
-                            </Text>
-                            <Text style={styles.cardTitle}>
-                              {course["name-course"]}
-                            </Text>
-                            <Text style={styles.cardTeacher}>
-                              Profesor: {course["teacher"]}
-                            </Text>
-                          </View>
-                          <View style={styles.cardButton}>
-                            <TouchableOpacity style={styles.accessButton}>
-                              <Text style={styles.accessText}>Acceder</Text>
-                            </TouchableOpacity>
-                          </View>
+            ) : (
+              // <ScrollView
+              //   contentContainerStyle={styles.scrollContent}
+              //   style={styles.scrollView}
+              // >
+              <View style={styles.gridContent}>
+                <View style={styles.grid}>
+                  {courses.length > 0 ? (
+                    courses.map((course) => (
+                      <View style={styles.cardsContent}>
+                        <View style={styles.cardImage}>
+                          <Image
+                            source={require("../assets/portada-course.png")}
+                            style={styles.imageCard}
+                          />
                         </View>
-                      ))
-                    ) : (
-                      <Text>No hay cursos disponibles</Text>
-                    )}
-                  </View>
+                        <View style={styles.cardText}>
+                          <Text style={styles.cardTarjet}>
+                            {course["carrer"]}
+                          </Text>
+                          <Text style={styles.cardTitle}>
+                            {course["name-course"]}
+                          </Text>
+                          <Text style={styles.cardTeacher}>
+                            Profesor: {course["teacher"]}
+                          </Text>
+                        </View>
+                        <View style={styles.cardButton}>
+                          <TouchableOpacity style={styles.accessButton}>
+                            <Text style={styles.accessText}>Acceder</Text>
+                          </TouchableOpacity>
+                        </View>
+                      </View>
+                    ))
+                  ) : (
+                    <Text>No hay cursos disponibles</Text>
+                  )}
                 </View>
-            </ScrollView>
-          )}
-        </View>
+              </View>
+              // </ScrollView>
+            )}
+          </View>
+        </ScrollView>
+
         <Navbar />
       </View>
     </View>
@@ -157,7 +163,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     borderRadius: 5,
     paddingHorizontal: 50,
-    marginBottom: 10
+    marginBottom: 10,
   },
   accessText: {
     color: "white",
@@ -171,7 +177,7 @@ const styles = StyleSheet.create({
   cardTeacher: {
     fontSize: 14,
     color: "#666",
-    fontWeight: "600"
+    fontWeight: "600",
   },
   cardTarjet: {
     paddingHorizontal: 5,
@@ -190,18 +196,18 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderColor: "#c6c6c6",
     marginBottom: 10,
-    alignItems: 'center',
-    justifyContent: 'left',
+    alignItems: "center",
+    justifyContent: "left",
   },
 
   cardImage: {
     width: "100%",
   },
   imageCard: {
-   width: "100%",
-   height: 100,
-   borderTopEndRadius: 9,
-   borderTopStartRadius: 9,
+    width: "100%",
+    height: 100,
+    borderTopEndRadius: 9,
+    borderTopStartRadius: 9,
   },
   cardText: {
     width: "100%",
@@ -280,7 +286,7 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     flex: 1,
-    height: 35,
+    height: 40,
     paddingLeft: 10,
     fontSize: 16,
     outlineStyle: "none",
@@ -289,7 +295,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
     color: "#555555",
   },
-  
+
   loaderContainer: {
     flex: 1,
     justifyContent: "center",
@@ -297,7 +303,7 @@ const styles = StyleSheet.create({
   },
 
   scrollView: {
-    height: 295,
+    height: 560,
     overflow: "auto",
     width: "100%",
     alignSelf: "center",

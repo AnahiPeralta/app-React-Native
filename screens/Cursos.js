@@ -73,7 +73,7 @@ export default function Cursos() {
       <View style={styles.container}>
         <View style={styles.logoContainer}>
           <Image
-            source={require("../assets/isdm_logo_expandido.svg")} // Cambia esta ruta por la ubicación de tu logo
+            source={require("../assets/isdm_logo_expandido.png")} // Cambia esta ruta por la ubicación de tu logo
             style={styles.logo}
           />
         </View>
@@ -214,14 +214,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   container: {
-    flex: 1,
+    // flex: 1,
     justifyContent: "center",
-    padding: 18,
+    padding: 5,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 5,
-    elevation: 5,
+    elevation:1,
     borderBottomWidth: 1,
     borderBottomColor: "#ddd",
   },
@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 10,
-    marginTop: 10,
+    marginTop: 25,
   },
   logo: {
     width: "100%",
@@ -286,7 +286,8 @@ const styles = StyleSheet.create({
   },
 
   scrollView: {
-    height: 330,
+    // height: 330,
+    height: 370,
     overflow: "auto",
     width: "90%",
     alignSelf: "center",
@@ -303,13 +304,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 20,
-    paddingHorizontal: 0.3,
   },
   containerSearch: {
     width: "100%",
     backgroundColor: "#800025",
     borderEndEndRadius: 15,
-    borderEndStartRadius: 15,
+    borderBottomLeftRadius: 15,
     paddingVertical: 20,
     paddingHorizontal: 30,
   },
@@ -332,7 +332,7 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     flex: 1,
-    height: 35,
+    height: 40,
     paddingLeft: 10,
     fontSize: 16,
     outlineStyle: "none",
@@ -420,8 +420,8 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     backgroundColor: "#008196",
     color: "white",
-    fontSize: 12,
-    width: 140,
+    fontSize: 13,
+    width: 170,
     textAlign: "center",
     borderRadius: 5,
     marginBottom: 5,

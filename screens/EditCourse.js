@@ -6,11 +6,20 @@ import {
   StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
-  Modal
+  Modal,
+  ScrollView
 } from "react-native";
 import Navbar from "../Components/Navbar";
 import { db } from "../credenciales";
-import { doc, getDoc, collection, getDocs, updateDoc } from "firebase/firestore";
+import { Picker } from "@react-native-picker/picker";
+
+import {
+  doc,
+  getDoc,
+  collection,
+  getDocs,
+  updateDoc,
+} from "firebase/firestore";
 
 const EditCourse = ({ route, navigation }) => {
   const { courseId } = route.params; // Suponemos que el ID del curso se pasa como parámetro
@@ -27,7 +36,7 @@ const EditCourse = ({ route, navigation }) => {
   const [sections, setSections] = useState([]);
 
   const [loading, setLoading] = useState(true);
-  const [modalVisible, setModalVisible] = useState(false); 
+  const [modalVisible, setModalVisible] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
 
   // Obtener los datos del curso a editar
@@ -95,7 +104,13 @@ const EditCourse = ({ route, navigation }) => {
 
   // Función para manejar la actualización del curso
   const handleUpdateCourse = async () => {
-    if (!courseTitle || !selectedTeacher || !selectedCareer || !selectedSection || !description) {
+    if (
+      !courseTitle ||
+      !selectedTeacher ||
+      !selectedCareer ||
+      !selectedSection ||
+      !description
+    ) {
       alert("Todos los campos son obligatorios.");
       return;
     }
@@ -134,89 +149,99 @@ const EditCourse = ({ route, navigation }) => {
 
   const handleCloseModal = () => {
     setModalVisible(false);
-    navigation.navigate("Cursos"); 
+    navigation.navigate("Cursos");
   };
 
   return (
     <View style={styles.container}>
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Nombre de curso</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Ingrese el nombre del curso"
-          value={courseTitle}
-          onChangeText={setCourseTitle}
-        />
-      </View>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        style={styles.scrollView}
+      >
+        <View style={styles.containerInputs}>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Nombre de curso</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Ingrese el nombre del curso"
+              value={courseTitle}
+              onChangeText={setCourseTitle}
+            />
+          </View>
 
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Profesor Asignado</Text>
-        <select
-          value={selectedTeacher}
-          onChange={(e) => setSelectedTeacher(e.target.value)}
-          style={styles.inputSelect}
-        >
-          <option value="" disabled>
-            Seleccione un profesor
-          </option>
-          {teachers.map((teacher) => (
-            <option key={teacher.id} value={teacher.name}>
-              {teacher.name}
-            </option>
-          ))}
-        </select>
-      </View>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Profesor Asignado</Text>
+            <Picker
+              selectedValue={selectedTeacher}
+              onValueChange={(itemValue) => setSelectedTeacher(itemValue)}
+              style={styles.inputSelectCustom}
+            >
+              <Picker.Item label="Seleccione un profesor" value="" />
+              {teachers.map((teacher) => (
+                <Picker.Item
+                  key={teacher.id}
+                  label={teacher.name}
+                  value={teacher.name}
+                />
+              ))}
+            </Picker>
+          </View>
 
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Carrera</Text>
-        <select
-          value={selectedCareer}
-          onChange={(e) => setSelectedCareer(e.target.value)}
-          style={styles.inputSelect}
-        >
-          <option value="" disabled>
-            Seleccione una carrera
-          </option>
-          {careers.map((career) => (
-            <option key={career.id} value={career.name}>
-              {career.name}
-            </option>
-          ))}
-        </select>
-      </View>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Carrera</Text>
+            <Picker
+              selectedValue={selectedCareer}
+              onValueChange={(itemValue) => setSelectedCareer(itemValue)}
+              style={styles.inputSelectCustom}
+            >
+              <Picker.Item label="Seleccione una carrera" value="" />
+              {careers.map((career) => (
+                <Picker.Item
+                  key={career.id}
+                  label={career.name}
+                  value={career.name}
+                />
+              ))}
+            </Picker>
+          </View>
 
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Sección</Text>
-        <select
-          value={selectedSection}
-          onChange={(e) => setSelectedSection(e.target.value)}
-          style={styles.inputSelect}
-        >
-          <option value="" disabled>
-            Seleccione una sección
-          </option>
-          {sections.map((section) => (
-            <option key={section.id} value={section.name}>
-              {section.name}
-            </option>
-          ))}
-        </select>
-      </View>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Sección</Text>
+            <Picker
+              selectedValue={selectedSection}
+              onValueChange={(itemValue) => setSelectedSection(itemValue)}
+              style={styles.inputSelectCustom}
+            >
+              <Picker.Item label="Seleccione una sección" value="" />
+              {sections.map((section) => (
+                <Picker.Item
+                  key={section.id}
+                  label={section.name}
+                  value={section.name}
+                />
+              ))}
+            </Picker>
+          </View>
 
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Descripción</Text>
-        <TextInput
-          style={styles.inputTextArea}
-          placeholder="Ingrese la descripción del curso"
-          value={description}
-          onChangeText={setDescription}
-          multiline={true}
-          numberOfLines={5}
-          textAlignVertical="top"
-        />
-      </View>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Descripción</Text>
+            <TextInput
+              style={styles.inputTextArea}
+              placeholder="Ingrese la descripción del curso"
+              value={description}
+              onChangeText={setDescription}
+              multiline={true}
+              numberOfLines={5}
+              textAlignVertical="top"
+            />
+          </View>
+        </View>
+      </ScrollView>
 
-      <TouchableOpacity style={styles.editCourseButton} onPress={handleUpdateCourse}>
+      <TouchableOpacity
+        style={styles.editCourseButton}
+        onPress={handleUpdateCourse}
+      >
         <Text style={styles.editCourseButtonText}>Actualizar Curso</Text>
       </TouchableOpacity>
 
@@ -229,8 +254,10 @@ const EditCourse = ({ route, navigation }) => {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContainer}>
             <Text style={styles.modalTitle}>Cambios Guardados</Text>
-            <Text style={styles.modalMessage}>Ahora puedes verlo en Cursos</Text>
-            <TouchableOpacity 
+            <Text style={styles.modalMessage}>
+              Ahora puedes verlo en Cursos
+            </Text>
+            <TouchableOpacity
               style={styles.modalButton}
               onPress={handleCloseModal}
             >
@@ -286,9 +313,9 @@ const styles = StyleSheet.create({
     paddingLeft: 5,
     paddingRight: 5,
     paddingVertical: 10,
-    fontSize: '13px',
+    fontSize: 13,
     boxSizing: "border-box",
-    color: '#8a8a8a'
+    color: "#8a8a8a",
   },
   editCourseButton: {
     backgroundColor: "#8b2a30",
@@ -337,6 +364,22 @@ const styles = StyleSheet.create({
   modalButtonText: {
     color: "white",
     fontSize: 16,
+  },
+
+  inputSelectCustom: {
+    borderWidth: 2,
+    borderRadius: 8,
+    borderColor: "#c6c6c6",
+    backgroundColor: "white",
+    marginBottom: 15,
+    paddingLeft: 5,
+    paddingRight: 5,
+    fontSize: 13,
+    boxSizing: "border-box",
+    color: "#8a8a8a",
+  },
+  scrollView: {
+    marginBottom: 20,
   },
 });
 

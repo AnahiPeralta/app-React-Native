@@ -2,14 +2,14 @@ import React from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
-const TopNavbar = () => {
+export default function TopNavbar () {
   const navigation = useNavigation();
 
   return (
     <View style={styles.container}>
       <View style={styles.logoContainer}>
         <Image
-          source={require("../assets/isdm_logo_expandido.svg")} // Cambia esta ruta por la ubicación de tu logo
+          source={require("../assets/isdm_logo_expandido.png")} 
           style={styles.logo}
         />
       </View>
@@ -19,14 +19,14 @@ const TopNavbar = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    // flex: 1,
     justifyContent: "center",
     padding: 5,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 5,
-    elevation: 5,
+    elevation:1,
     borderBottomWidth: 1,
     borderBottomColor: "#ddd",
   },
@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 10,
-    marginTop: 10,
+    marginTop: 25,
   },
   logo: {
     width: "100%",  
@@ -42,5 +42,3 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
   }
 });
-
-export default TopNavbar;
