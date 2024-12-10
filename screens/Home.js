@@ -17,14 +17,12 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { collection, getDocs } from "firebase/firestore";
 
 export default function Home() {
-  const [searchText, setSearchText] = useState("");
+  const [searchText, setSearchText] = useState("");  // Almacena el texto de búsqueda
+  const [courses, setCourses] = useState([]);  // Almacena los cursos
+  const [filteredCourses, setFilteredCourses] = useState([]);  // Almacena los cursos filtrados
+  const [loading, setLoading] = useState(true);  // Indica si los cursos están siendo cargados
+
   const navigation = useNavigation();
-
-  const [courses, setCourses] = useState([]);
-  const [showModal, setShowModal] = useState(false);
-  const [courseToDelete, setCourseToDelete] = useState(null);
-
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -35,6 +33,7 @@ export default function Home() {
           ...doc.data(),
         }));
         setCourses(coursesData);
+        setFilteredCourses(coursesData);  // Inicializa los cursos filtrados con todos los cursos
       } catch (error) {
         console.error("Error fetching courses:", error);
       } finally {
@@ -44,6 +43,17 @@ export default function Home() {
 
     fetchCourses();
   }, []);
+
+  // Filtra los cursos según el texto de búsqueda
+  const handleSearch = (text) => {
+    setSearchText(text);
+    const filtered = courses.filter((course) =>
+      course["name-course"].toLowerCase().includes(text.toLowerCase()) ||
+      course["carrer"].toLowerCase().includes(text.toLowerCase()) ||
+      course["teacher"].toLowerCase().includes(text.toLowerCase())
+    );
+    setFilteredCourses(filtered);  // Actualiza los cursos filtrados
+  };
 
   if (loading) {
     return (
@@ -91,7 +101,7 @@ export default function Home() {
                   placeholder="Buscar un curso..."
                   placeholderTextColor="#8a8a8a"
                   value={searchText}
-                  onChangeText={(text) => setSearchText(text)}
+                  onChangeText={handleSearch}  // Llama a handleSearch en cada cambio
                 />
                 <Icon
                   name="search"
@@ -101,52 +111,39 @@ export default function Home() {
                 />
               </View>
             </View>
-            {loading ? (
-              <ActivityIndicator
-                size="large"
-                color="#0000ff"
-                style={styles.loaderContainer}
-              />
-            ) : (
-              // <ScrollView
-              //   contentContainerStyle={styles.scrollContent}
-              //   style={styles.scrollView}
-              // >
+            {filteredCourses.length > 0 ? (
               <View style={styles.gridContent}>
                 <View style={styles.grid}>
-                  {courses.length > 0 ? (
-                    courses.map((course) => (
-                      <View style={styles.cardsContent}>
-                        <View style={styles.cardImage}>
-                          <Image
-                            source={require("../assets/portada-course.png")}
-                            style={styles.imageCard}
-                          />
-                        </View>
-                        <View style={styles.cardText}>
-                          <Text style={styles.cardTarjet}>
-                            {course["carrer"]}
-                          </Text>
-                          <Text style={styles.cardTitle}>
-                            {course["name-course"]}
-                          </Text>
-                          <Text style={styles.cardTeacher}>
-                            Profesor: {course["teacher"]}
-                          </Text>
-                        </View>
-                        <View style={styles.cardButton}>
-                          <TouchableOpacity style={styles.accessButton}>
-                            <Text style={styles.accessText}>Acceder</Text>
-                          </TouchableOpacity>
-                        </View>
+                  {filteredCourses.map((course) => (
+                    <View style={styles.cardsContent} key={course.id}>
+                      <View style={styles.cardImage}>
+                        <Image
+                          source={require("../assets/portada-course.png")}
+                          style={styles.imageCard}
+                        />
                       </View>
-                    ))
-                  ) : (
-                    <Text>No hay cursos disponibles</Text>
-                  )}
+                      <View style={styles.cardText}>
+                        <Text style={styles.cardTarjet}>
+                          {course["carrer"]}
+                        </Text>
+                        <Text style={styles.cardTitle}>
+                          {course["name-course"]}
+                        </Text>
+                        <Text style={styles.cardTeacher}>
+                          Profesor: {course["teacher"]}
+                        </Text>
+                      </View>
+                      <View style={styles.cardButton}>
+                        <TouchableOpacity style={styles.accessButton}>
+                          <Text style={styles.accessText}>Acceder</Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  ))}
                 </View>
               </View>
-              // </ScrollView>
+            ) : (
+              <Text>No hay cursos disponibles</Text>
             )}
           </View>
         </ScrollView>
@@ -156,7 +153,6 @@ export default function Home() {
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   accessButton: {
     backgroundColor: "#8b2a30",

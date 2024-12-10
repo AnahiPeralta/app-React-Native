@@ -12,9 +12,8 @@ import {
 import {appFirebase, db} from "../credenciales";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { collection, addDoc } from "firebase/firestore";
-import bcrypt from "bcryptjs";
 import { useNavigation } from '@react-navigation/native';
-
+import * as Crypto from "expo-crypto"; 
 const auth = getAuth(appFirebase);
 
 export default function Register() {
@@ -66,8 +65,10 @@ export default function Register() {
     }
 
     try {
-      const salt = bcrypt.genSaltSync(10); 
-      const hashedPassword = bcrypt.hashSync(password, salt);
+      const hashedPassword = await Crypto.digestStringAsync(
+        Crypto.CryptoDigestAlgorithm.SHA256,
+        password
+      );
 
       const auth = getAuth();
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
