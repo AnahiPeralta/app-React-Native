@@ -12,6 +12,7 @@ import Cursos from "./screens/Cursos";
 import AddCourse from "./screens/AddCourse";
 import EditCourse from "./screens/EditCourse";
 import Profile from "./screens/Profile";
+import ViewMore from "./screens/ViewMore";
 
 const Stack = createStackNavigator();
 
@@ -25,6 +26,7 @@ const linking = {
       AddCourse: "Añadir",
       EditCourse: "Editar",
       Profile: "Perfil",
+      ViewMore: "Ver más"
     },
   },
 };
@@ -119,6 +121,11 @@ export default function App() {
             ),
             headerBackVisible: false, // Desactiva el retroceso por defecto
           })}
+        />
+         <Stack.Screen
+          name="ViewMore"
+          component={ViewMore}
+          options={{ headerShown: false }}
         />
       </Stack.Navigator>
     </NavigationContainer>

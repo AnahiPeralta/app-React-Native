@@ -134,7 +134,8 @@ export default function Home() {
                         </Text>
                       </View>
                       <View style={styles.cardButton}>
-                        <TouchableOpacity style={styles.accessButton}>
+                        <TouchableOpacity style={styles.accessButton}
+                          onPress={() => navigation.navigate('ViewMore')}>
                           <Text style={styles.accessText}>Acceder</Text>
                         </TouchableOpacity>
                       </View>
