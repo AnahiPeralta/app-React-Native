@@ -135,7 +135,7 @@ export default function Home() {
                       </View>
                       <View style={styles.cardButton}>
                         <TouchableOpacity style={styles.accessButton}
-                          onPress={() => navigation.navigate('ViewMore')}>
+                          onPress={() => navigation.navigate('ViewMore', { courseId: course.id })}>
                           <Text style={styles.accessText}>Acceder</Text>
                         </TouchableOpacity>
                       </View>

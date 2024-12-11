@@ -18,13 +18,12 @@ import { useNavigation } from "@react-navigation/native";
 
 export default function Cursos() {
   const [searchText, setSearchText] = useState("");
-  const navigation = useNavigation();
-
   const [courses, setCourses] = useState([]);
+  const [filteredCourses, setFilteredCourses] = useState([]); // Estado para los cursos filtrados
   const [showModal, setShowModal] = useState(false);
   const [courseToDelete, setCourseToDelete] = useState(null);
-
   const [loading, setLoading] = useState(true);
+  const navigation = useNavigation();
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -35,6 +34,7 @@ export default function Cursos() {
           ...doc.data(),
         }));
         setCourses(coursesData);
+        setFilteredCourses(coursesData); // Inicializa los cursos filtrados
       } catch (error) {
         console.error("Error fetching courses:", error);
       } finally {
@@ -44,6 +44,23 @@ export default function Cursos() {
 
     fetchCourses();
   }, []);
+
+  useEffect(() => {
+    // Filtrar los cursos en base al texto de búsqueda
+    if (searchText.trim() === "") {
+      setFilteredCourses(courses);
+    } else {
+      const lowerSearchText = searchText.toLowerCase();
+      setFilteredCourses(
+        courses.filter(
+          (course) =>
+            course["name-course"].toLowerCase().includes(lowerSearchText) ||
+            course["teacher"].toLowerCase().includes(lowerSearchText) ||
+            course["carrer"].toLowerCase().includes(lowerSearchText)
+        )
+      );
+    }
+  }, [searchText, courses]);
 
   const deleteCourse = async (id) => {
     try {
@@ -70,14 +87,7 @@ export default function Cursos() {
 
   return (
     <View style={styles.flexContent}>
-      <View style={styles.container}>
-        <View style={styles.logoContainer}>
-          <Image
-            source={require("../assets/isdm_logo_expandido.png")} // Cambia esta ruta por la ubicación de tu logo
-            style={styles.logo}
-          />
-        </View>
-      </View>
+      {/* Búsqueda */}
       <View style={styles.bannerContainer}>
         <View style={styles.containerSearch}>
           <View style={styles.textContain}>
@@ -100,112 +110,54 @@ export default function Cursos() {
           </View>
         </View>
       </View>
-      <View style={styles.addCourseButtonContainer}>
-        <TouchableOpacity
-          style={styles.addCourseButton}
-          onPress={() => navigation.navigate("AddCourse")}
-        >
-          <Text style={styles.addCourseButtonText}>Añadir Curso</Text>
-        </TouchableOpacity>
-      </View>
 
-      {loading ? (
-        <ActivityIndicator size="large" color="#0000ff" style={styles.loaderContainer} />
-      ) : (
-        <ScrollView
-          contentContainerStyle={styles.scrollContent}
-          style={styles.scrollView}
-        >
-          <View style={styles.maxWidth}>
-            <View style={styles.containerCursos}>
-              <View style={styles.cardsContainer}>
-                {courses.length > 0 ? (
-                  courses.map((course) => (
-                    <View style={styles.card}>
-                      <View style={styles.cardLeft}>
-                        <Text style={styles.cardTarjet}>
-                          {course["carrer"]}
-                        </Text>
-                        <Text style={styles.cardTitle}>
-                          {course["name-course"]}
-                        </Text>
-                        <Text style={styles.cardTeacher}>
-                          Profesor: {course["teacher"]}
-                        </Text>
-                      </View>
-                      <View style={styles.cardRight}>
-                        <TouchableOpacity
-                          style={styles.editButton}
-                          onPress={() => handleEdit(course.id)}
-                        >
-                          <Icon
-                            name="edit"
-                            size={18}
-                            color="#fff"
-                            style={styles.icon}
-                          />
-                          <Text style={styles.editText}>Editar</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          style={styles.deleteButton}
-                          onPress={() => {
-                            setCourseToDelete(course.id);
-                            setShowModal(true);
-                          }}
-                        >
-                          <Icon
-                            name="trash"
-                            size={18}
-                            color="#fff"
-                            style={styles.icon}
-                          />
-                          <Text style={styles.deleteText}>Eliminar</Text>
-                        </TouchableOpacity>
-                      </View>
+      {/* Cursos */}
+      <ScrollView contentContainerStyle={styles.scrollContent} style={styles.scrollView}>
+        <View style={styles.maxWidth}>
+          <View style={styles.containerCursos}>
+            <View style={styles.cardsContainer}>
+              {filteredCourses.length > 0 ? (
+                filteredCourses.map((course) => (
+                  <View style={styles.card} key={course.id}>
+                    <View style={styles.cardLeft}>
+                      <Text style={styles.cardTarjet}>{course["carrer"]}</Text>
+                      <Text style={styles.cardTitle}>{course["name-course"]}</Text>
+                      <Text style={styles.cardTeacher}>
+                        Profesor: {course["teacher"]}
+                      </Text>
                     </View>
-                  ))
-                ) : (
-                  <Text>No hay cursos disponibles</Text>
-                )}
-              </View>
-            </View>
-          </View>
-        </ScrollView>
-      )}
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={showModal}
-        onRequestClose={() => setShowModal(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Eliminar Curso</Text>
-            <Text style={styles.modalMessage}>
-              ¿Estas seguro que quieres eliminar este curso? Esta acción no se
-              puede deshacer.
-            </Text>
-            <View style={styles.modalButtons}>
-              <TouchableOpacity
-                style={styles.modalButton}
-                onPress={() => deleteCourse(courseToDelete)}
-              >
-                <Text style={styles.modalButtonText}>Eliminar</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.modalButtonCancel}
-                onPress={() => setShowModal(false)}
-              >
-                <Text style={styles.modalButtonText}>Cancelar</Text>
-              </TouchableOpacity>
+                    <View style={styles.cardRight}>
+                      <TouchableOpacity
+                        style={styles.editButton}
+                        onPress={() => handleEdit(course.id)}
+                      >
+                        <Icon name="edit" size={18} color="#fff" style={styles.icon} />
+                        <Text style={styles.editText}>Editar</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={styles.deleteButton}
+                        onPress={() => {
+                          setCourseToDelete(course.id);
+                          setShowModal(true);
+                        }}
+                      >
+                        <Icon name="trash" size={18} color="#fff" style={styles.icon} />
+                        <Text style={styles.deleteText}>Eliminar</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                ))
+              ) : (
+                <Text>No hay cursos disponibles</Text>
+              )}
             </View>
           </View>
         </View>
-      </Modal>
-      <Navbar />
+      </ScrollView>
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   loaderContainer: {

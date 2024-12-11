@@ -4,23 +4,54 @@ import {
   StyleSheet,
   View,
   Image,
-  TouchableOpacity,
-  TextInput,
   ActivityIndicator,
   ScrollView,
   Linking,
 } from "react-native";
-import { appFirebase, db } from "../credenciales";
-import { useNavigation } from "@react-navigation/native";
+import { db } from "../credenciales";
+import { doc, getDoc } from "firebase/firestore";
+import { useRoute, useNavigation } from "@react-navigation/native";
 import Navbar from "../Components/Navbar";
 import TopNavbar from "../Components/TopNavbar";
-import Icon from "react-native-vector-icons/FontAwesome";
-import { collection, getDocs } from "firebase/firestore";
 
 export default function ViewMore() {
-  const navigation = useNavigation();
+  const route = useRoute();
+  const { courseId } = route.params || {}; // Verifica que courseId exista
+
+  const [courseData, setCourseData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCourseData = async () => {
+      if (!courseId) {
+        console.error("No se proporcionó courseId.");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const courseDoc = await getDoc(doc(db, "courses", courseId));
+        if (courseDoc.exists()) {
+          setCourseData({ id: courseDoc.id, ...courseDoc.data() });
+        } else {
+          console.error("El curso no existe en Firestore.");
+        }
+      } catch (error) {
+        console.error("Error al obtener los datos del curso:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCourseData();
+  }, [courseId]);
 
   const handleLinkPress = async (url) => {
+    if (!url) {
+      console.warn("URL no válida.");
+      return;
+    }
+
     try {
       const supported = await Linking.canOpenURL(url);
       if (supported) {
@@ -33,87 +64,100 @@ export default function ViewMore() {
     }
   };
 
+  if (loading) {
+    return (
+      <View style={styles.loaderContainer}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
+
+  if (!courseData) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorText}>
+          No se encontró la información del curso.
+        </Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.flexContent}>
-      <View>
-        <TopNavbar />
-        <ScrollView
-          contentContainerStyle={styles.scrollContent}
-          style={styles.scrollView}
-        >
-          <View style={styles.maxWidth}>
-            <View style={styles.cardCourse}>
-              <Text style={styles.titleCarrer}>Probabilidad y Estadística</Text>
-              <Text style={styles.titleProf}>Prof Yañez Cinthia</Text>
-              <Image
-                source={require("../assets/Logo-img.png")}
-                style={styles.profile}
-              />
+      <TopNavbar />
+      <ScrollView contentContainerStyle={styles.scrollContent} style={styles.scrollView}>
+        <View style={styles.maxWidth}>
+          <View style={styles.cardCourse}>
+            <Text style={styles.titleCarrer}>{courseData["name-course"] || "Nombre no disponible"}</Text>
+            <Text style={styles.titleProf}>Prof. {courseData["teacher"] || "No especificado"}</Text>
+            <Image
+              source={require("../assets/Logo-img.png")}
+              style={styles.profile}
+            />
+          </View>
+          <View style={styles.cardBody}>
+            <Text style={styles.titleResourses}>Descripción</Text>
+            <View style={styles.description}>
+              <Text style={styles.titleDescription}>
+                {courseData["description"] || "No hay descripción disponible."}
+              </Text>
             </View>
-            <View style={styles.cardBody}>
-              <Text style={styles.titleResourses}>Descripción</Text>
-              <View style={styles.description}>
-                <Text style={styles.titleDescription}>
-                  Lorem Ipsum is simply dummy text of the printing and
-                  typesetting industry. Lorem Ipsum has been the industry's
-                  standard dummy text ever since the 1500s, when an unknown
-                  printer took a galley of type and scrambled it to make a type
-                  specimen book.
-                </Text>
-              </View>
-              <Text style={styles.titleResourses}>Recursos</Text>
-              <View style={styles.resourses}>
-                {/* Enlace a la planilla de seguimiento */}
+            <Text style={styles.titleResourses}>Recursos</Text>
+            <View style={styles.resourses}>
+              {/* Planilla de seguimiento */}
+              {courseData["trackingSheet"] ? (
                 <View style={styles.resourceItem}>
-                  <Text style={styles.icon}>📋</Text>{" "}
-                  {/* Ícono de la planilla */}
+                  <Text style={styles.icon}>📋</Text>
                   <Text
                     style={styles.link}
-                    onPress={() =>
-                      Linking.openURL(
-                        "https://example.com/planilla-seguimiento"
-                      )
-                    }
+                    onPress={() => handleLinkPress(courseData["trackingSheet"])}
                   >
                     Planilla de Seguimiento
                   </Text>
                 </View>
+              ) : (
+                <Text style={styles.noResourceText}>No hay planilla disponible</Text>
+              )}
 
-                {/* Enlace al Drive */}
+              {/* Enlace al Drive */}
+              {courseData["driveLink"] ? (
                 <View style={styles.resourceItem}>
-                  <Text style={styles.icon}>📂</Text> {/* Ícono de Drive */}
+                  <Text style={styles.icon}>📂</Text>
                   <Text
                     style={styles.link}
-                    onPress={() =>
-                      Linking.openURL("https://drive.google.com/example")
-                    }
+                    onPress={() => handleLinkPress(courseData["driveLink"])}
                   >
                     Link a Drive
                   </Text>
                 </View>
+              ) : (
+                <Text style={styles.noResourceText}>No hay enlace a Drive</Text>
+              )}
 
-                {/* Enlace a la carpeta de manuales */}
+              {/* Carpeta de manuales */}
+              {courseData["manualsFolder"] ? (
                 <View style={styles.resourceItem}>
-                  <Text style={styles.icon}>📚</Text> {/* Ícono de manuales */}
+                  <Text style={styles.icon}>📚</Text>
                   <Text
                     style={styles.link}
-                    onPress={() =>
-                      Linking.openURL("https://example.com/carpeta-manuales")
-                    }
+                    onPress={() => handleLinkPress(courseData["manualsFolder"])}
                   >
                     Carpeta de Manuales
                   </Text>
                 </View>
-              </View>
+              ) : (
+                <Text style={styles.noResourceText}>No hay carpeta de manuales</Text>
+              )}
             </View>
           </View>
-        </ScrollView>
-
-        <Navbar />
-      </View>
+        </View>
+      </ScrollView>
+      <Navbar />
     </View>
   );
 }
+
+
 const styles = StyleSheet.create({
   accessButton: {
     backgroundColor: "#8b2a30",
