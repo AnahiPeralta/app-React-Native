@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native";
+import { Ionicons } from "@expo/vector-icons"; // Asegúrate de instalar @expo/vector-icons
 import appFirebase from "../credenciales";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 const auth = getAuth(appFirebase);
@@ -16,11 +17,12 @@ const auth = getAuth(appFirebase);
 export default function Login(props) {
   const navigation = useNavigation();
 
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [generalError, setGeneralError] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // Estado para manejar la visibilidad de la contraseña
 
   const handleLogin = () => {
     let valid = true;
@@ -45,11 +47,10 @@ export default function Login(props) {
 
     // Si las validaciones pasan, hacer login
     if (valid) {
-      const auth = getAuth();
       signInWithEmailAndPassword(auth, email, password)
         .then(() => {
           // Redirigir al usuario a la pantalla principal después del login exitoso
-          navigation.navigate("Home"); // Asegúrate de tener configurada esta pantalla en tu navegación
+          navigation.navigate("Home");
         })
         .catch((error) => {
           if (error.code === "auth/user-not-found") {
@@ -62,6 +63,7 @@ export default function Login(props) {
         });
     }
   };
+
   return (
     <View style={styles.padre}>
       <View style={styles.imageContainer}>
@@ -71,34 +73,49 @@ export default function Login(props) {
         />
       </View>
       <Text style={styles.textTitle}>Iniciar Sesión</Text>
-      {generalError ? (
-        <Text style={styles.errorText}>{generalError}</Text>
-      ) : null}
+      {generalError ? <Text style={styles.errorText}>{generalError}</Text> : null}
       {emailError ? <Text style={styles.error}>{emailError}</Text> : null}
+      
+      {/* Campo de correo */}
       <View style={styles.tarjeta}>
-        <View>
-          <TextInput
-            placeholder="Ingresa tu correo electrónico"
-            placeholderTextColor="#8a8a8a"
-            style={styles.inputStyle}
-            onChangeText={(text) => setEmail(text)}
-          />
-        </View>
+        <Text style={styles.label}>Correo electrónico</Text>
+        <TextInput
+          placeholder="Ingresa tu correo electrónico"
+          placeholderTextColor="#8a8a8a"
+          style={styles.inputStyle}
+          onChangeText={(text) => setEmail(text)}
+          value={email}
+        />
       </View>
 
       {passwordError ? <Text style={styles.error}>{passwordError}</Text> : null}
+
+      {/* Campo de contraseña */}
       <View style={styles.tarjeta}>
-        <View>
+        <Text style={styles.label}>Contraseña</Text>
+        <View style={styles.passwordContainer}>
           <TextInput
-            placeholder="Ingresa tu contraseña "
+            placeholder="Ingresa tu contraseña"
             placeholderTextColor="#8a8a8a"
             style={styles.inputStyle}
             onChangeText={(text) => setPassword(text)}
-            secureTextEntry={true}
+            value={password}
+            secureTextEntry={!showPassword} // Dependiendo de showPassword, ocultar o mostrar
           />
+          <TouchableOpacity
+            style={styles.eyeIcon}
+            onPress={() => setShowPassword(!showPassword)}
+          >
+            <Ionicons
+              name={showPassword ? "eye-off" : "eye"}
+              size={24}
+              color="gray"
+            />
+          </TouchableOpacity>
         </View>
       </View>
 
+      {/* Botón de inicio de sesión */}
       <View style={styles.cardButton}>
         <TouchableOpacity onPress={handleLogin}>
           <Text style={styles.textButton}>Iniciar Sesión</Text>
@@ -106,7 +123,10 @@ export default function Login(props) {
       </View>
 
       <Text style={styles.noAccountText}>¿No tienes una cuenta?</Text>
-      <TouchableOpacity style={styles.registerButton} onPress={() => navigation.navigate("Register")}>
+      <TouchableOpacity
+        style={styles.registerButton}
+        onPress={() => navigation.navigate("Register")}
+      >
         <Text style={styles.registerText}>Regístrate</Text>
       </TouchableOpacity>
     </View>
@@ -120,7 +140,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     marginLeft: 20,
     textAlign: "left",
-    width:"80%"
+    width:"80%",
   },
   padre: {
     flex: 1,
@@ -157,15 +177,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     outlineStyle: "none",
   },
-  inputPass: {
-    paddingHorizontal: 10,
-    fontSize: 14,
-    outlineStyle: "none",
-    flex: 1,
-  },
-  iconContainer: {
-    padding: 10,
-  },
   textTitle: {
     fontSize: 28,
     marginBottom: 30,
@@ -173,7 +184,7 @@ const styles = StyleSheet.create({
   },
   cardButton: {
     backgroundColor: "#8b2a30",
-    borderRadius:10,
+    borderRadius: 10,
     width: "80%",
     paddingTop: 15,
     paddingBottom: 15,
@@ -183,7 +194,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: "center",
   },
-
   noAccountText: {
     color: "#111111",
     fontSize: 16,
@@ -192,7 +202,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   registerButton: {
-    backgroundColor: "",
     borderRadius: 10,
     width: "80%",
     paddingTop: 15,
@@ -205,11 +214,23 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: "center",
   },
-  inputContainer: {
-    flexDirection: "row", // Para alinear el input y el icono horizontalmente
-    alignItems: "center",
-  },
   errorText: {
     marginBottom: 10,
-  }
+    color: "red",
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: "bold",
+    color: "#333",
+    marginBottom: 5,
+  },
+  passwordContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  eyeIcon: {
+    position: "absolute",
+    right: 10,
+  },
 });

@@ -46,6 +46,14 @@ export default function ViewMore() {
     fetchCourseData();
   }, [courseId]);
 
+  const ensureValidUrl = (url) => {
+    if (!url) return "";
+    if (!/^https?:\/\//i.test(url)) {
+      return `https://${url}`; // Añadir 'https://' si no está presente
+    }
+    return url;
+  };
+
   const handleLinkPress = async (url) => {
     if (!url) {
       console.warn("URL no válida.");
@@ -55,12 +63,15 @@ export default function ViewMore() {
     try {
       const supported = await Linking.canOpenURL(url);
       if (supported) {
+        console.log(`Abriendo URL: ${url}`);
         await Linking.openURL(url);
       } else {
         console.error(`No se puede abrir esta URL: ${url}`);
+        alert("Esta URL no es compatible.");
       }
     } catch (error) {
       console.error("Error al abrir el enlace:", error);
+      alert("Hubo un problema al intentar abrir el enlace.");
     }
   };
 
@@ -110,7 +121,7 @@ export default function ViewMore() {
                   <Text style={styles.icon}>📋</Text>
                   <Text
                     style={styles.link}
-                    onPress={() => handleLinkPress(courseData["trackingSheet"])}
+                    onPress={() => handleLinkPress(ensureValidUrl(courseData["trackingSheet"]))}
                   >
                     Planilla de Seguimiento
                   </Text>
@@ -125,7 +136,7 @@ export default function ViewMore() {
                   <Text style={styles.icon}>📂</Text>
                   <Text
                     style={styles.link}
-                    onPress={() => handleLinkPress(courseData["driveLink"])}
+                    onPress={() => handleLinkPress(ensureValidUrl(courseData["driveLink"]))}
                   >
                     Link a Drive
                   </Text>
@@ -140,7 +151,7 @@ export default function ViewMore() {
                   <Text style={styles.icon}>📚</Text>
                   <Text
                     style={styles.link}
-                    onPress={() => handleLinkPress(courseData["manualsFolder"])}
+                    onPress={() => handleLinkPress(ensureValidUrl(courseData["manualsFolder"]))}
                   >
                     Carpeta de Manuales
                   </Text>
@@ -156,7 +167,6 @@ export default function ViewMore() {
     </View>
   );
 }
-
 
 const styles = StyleSheet.create({
   accessButton: {

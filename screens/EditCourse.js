@@ -35,6 +35,11 @@ const EditCourse = ({ route, navigation }) => {
   const [careers, setCareers] = useState([]);
   const [sections, setSections] = useState([]);
 
+  const [trackingSheet, setTrackingSheet] = useState("");
+  const [driveLink, setDriveLink] = useState("");
+  const [manualsFolder, setManualsFolder] = useState("");
+
+
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
@@ -53,6 +58,10 @@ const EditCourse = ({ route, navigation }) => {
           setSelectedCareer(data["carrer"]);
           setSelectedSection(data["section-carrer"]);
           setDescription(data["description"]);
+          setTrackingSheet(data["trackingSheet"] || "");
+          setDriveLink(data["driveLink"] || "");
+          setManualsFolder(data["manualsFolder"] || "");
+
         } else {
           console.log("El curso no existe.");
         }
@@ -109,7 +118,10 @@ const EditCourse = ({ route, navigation }) => {
       !selectedTeacher ||
       !selectedCareer ||
       !selectedSection ||
-      !description
+      !description ||
+      !trackingSheet ||
+      !driveLink ||
+      !manualsFolder
     ) {
       alert("Todos los campos son obligatorios.");
       return;
@@ -125,6 +137,9 @@ const EditCourse = ({ route, navigation }) => {
         carrer: selectedCareer,
         "section-carrer": selectedSection,
         description: description,
+        trackingSheet: trackingSheet,  
+        driveLink: driveLink,          
+        manualsFolder: manualsFolder,
       });
 
       setModalMessage("Curso actualizado correctamente.");
@@ -221,6 +236,35 @@ const EditCourse = ({ route, navigation }) => {
                 />
               ))}
             </Picker>
+          </View>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Hoja de seguimiento</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Ingrese la hoja de seguimiento"
+              value={trackingSheet}
+              onChangeText={setTrackingSheet}
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Enlace a Google Drive</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Ingrese el enlace a Google Drive"
+              value={driveLink}
+              onChangeText={setDriveLink}
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Carpeta de manuales</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Ingrese la carpeta de manuales"
+              value={manualsFolder}
+              onChangeText={setManualsFolder}
+            />
           </View>
 
           <View style={styles.inputContainer}>

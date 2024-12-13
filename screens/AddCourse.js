@@ -30,6 +30,10 @@ const AddCourse = () => {
   const [sections, setSections] = useState([]);
   const [selectedSection, setSelectedSection] = useState("");
 
+  const [trackingSheet, setTrackingSheet] = useState("");
+  const [driveLink, setDriveLink] = useState("");
+  const [manualsFolder, setManualsFolder] = useState("");
+
   const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -100,6 +104,9 @@ const AddCourse = () => {
         "section-carrer": section,
         teacher: teacher,
         description: description,
+        trackingSheet: trackingSheet,
+        driveLink: driveLink,
+        manualsFolder: manualsFolder,
       };
 
       // Guarda el curso en la colección "courses"
@@ -184,6 +191,37 @@ const AddCourse = () => {
                 />
               ))}
             </Picker>
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Planilla de seguimiento</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Ingrese el link de la planilla"
+              placeholderTextColor="#8a8a8a"
+              value={trackingSheet}
+              onChangeText={setTrackingSheet}
+            />
+          </View>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Link de Drive</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Ingrese el link de Drive"
+              placeholderTextColor="#8a8a8a"
+              value={driveLink}
+              onChangeText={setDriveLink}
+            />
+          </View>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Carpeta de manuales</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Ingrese el link de la carpeta de manuales"
+              placeholderTextColor="#8a8a8a"
+              value={manualsFolder}
+              onChangeText={setManualsFolder}
+            />
           </View>
           <View style={styles.inputContainer}>
             <Text style={styles.label}>Descripción del Curso</Text>

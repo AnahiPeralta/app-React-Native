@@ -15,7 +15,9 @@ import {
 import Navbar from "../Components/Navbar";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useNavigation } from "@react-navigation/native";
-
+import TopNavbar from "../Components/TopNavbar";
+import { Button } from "react-native-web";
+import AddCourse from "./AddCourse";
 export default function Cursos() {
   const [searchText, setSearchText] = useState("");
   const [courses, setCourses] = useState([]);
@@ -87,6 +89,7 @@ export default function Cursos() {
 
   return (
     <View style={styles.flexContent}>
+      <TopNavbar />
       {/* Búsqueda */}
       <View style={styles.bannerContainer}>
         <View style={styles.containerSearch}>
@@ -110,7 +113,12 @@ export default function Cursos() {
           </View>
         </View>
       </View>
-
+      <TouchableOpacity
+        style={styles.addCourseButton}
+        onPress={() => navigation.navigate("AddCourse")}
+      >
+        <Text style={styles.addCourseText}>AddCourse</Text>
+      </TouchableOpacity>
       {/* Cursos */}
       <ScrollView contentContainerStyle={styles.scrollContent} style={styles.scrollView}>
         <View style={styles.maxWidth}>
@@ -154,6 +162,33 @@ export default function Cursos() {
           </View>
         </View>
       </ScrollView>
+      <Modal
+        transparent={true}
+        visible={showModal}
+        animationType="fade"
+        onRequestClose={() => setShowModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <Text style={styles.modalText}>¿Estás seguro de que deseas eliminar este curso?</Text>
+            <View style={styles.buttonRow}>
+              <TouchableOpacity
+                style={styles.cancelButton}
+                onPress={() => setShowModal(false)}
+              >
+                <Text style={styles.cancelText}>Cancelar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.confirmButton}
+                onPress={() => deleteCourse(courseToDelete)}
+              >
+                <Text style={styles.confirmText}>Eliminar</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+      <Navbar />
     </View>
   );
 }
@@ -173,7 +208,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 5,
-    elevation:1,
+    elevation: 1,
     borderBottomWidth: 1,
     borderBottomColor: "#ddd",
   },
@@ -193,6 +228,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContainer: {
+    backgroundColor: "white",
+    padding: 20,
+    borderRadius: 10,
+    width: 300,
+    alignItems: "center",
   },
   modalContent: {
     backgroundColor: "#fff",
