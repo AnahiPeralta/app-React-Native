@@ -14,6 +14,7 @@ import { appFirebase, db } from "../credenciales";
 import { collection, getDocs, addDoc } from "firebase/firestore";
 import { useNavigation } from "@react-navigation/native";
 import { Picker } from "@react-native-picker/picker";
+import Icon from "react-native-vector-icons/Feather";
 
 const AddCourse = () => {
   const navigation = useNavigation();
@@ -93,10 +94,26 @@ const AddCourse = () => {
   };
 
   const handleSubmit = async () => {
+    // Validar campos obligatorios
+    if (
+      !courseTitle ||
+      !selectedTeacher ||
+      !selectedCareer ||
+      !selectedSection ||
+      !trackingSheet ||
+      !driveLink ||
+      !manualsFolder ||
+      !description
+    ) {
+      alert("Todos los campos son obligatorios. Por favor, complétalos.");
+      return;
+    }
+  
     const teacher = teachers.find((t) => t.id === selectedTeacher)?.name;
     const career = careers.find((c) => c.id === selectedCareer)?.name;
     const section = sections.find((c) => c.id === selectedSection)?.name;
     setLoading(true);
+  
     try {
       const newCourse = {
         carrer: career,
@@ -108,7 +125,7 @@ const AddCourse = () => {
         driveLink: driveLink,
         manualsFolder: manualsFolder,
       };
-
+  
       // Guarda el curso en la colección "courses"
       await addDoc(collection(db, "courses"), newCourse);
       console.log("Curso agregado:", newCourse);
@@ -116,9 +133,9 @@ const AddCourse = () => {
       setIsModalVisible(true);
     } catch (error) {
       console.error("Error al agregar el curso:", error);
+      setLoading(false);
     }
   };
-
   const handleCloseModal = () => {
     setIsModalVisible(false);
     navigation.navigate("Cursos");
@@ -146,7 +163,10 @@ const AddCourse = () => {
             <Picker
               selectedValue={selectedTeacher}
               onValueChange={(itemValue) => setSelectedTeacher(itemValue)}
-              style={styles.inputSelectCustom}
+              style={[
+                styles.inputSelectCustom,
+                { color: selectedTeacher === "" ? "#8a8a8a" : "black" },
+              ]}
             >
               <Picker.Item label="Seleccione un profesor" value="" />
               {teachers.map((teacher) => (
@@ -163,7 +183,10 @@ const AddCourse = () => {
             <Picker
               selectedValue={selectedCareer}
               onValueChange={(itemValue) => setSelectedCareer(itemValue)}
-              style={styles.inputSelectCustom}
+              style={[
+                styles.inputSelectCustom,
+                { color: selectedCareer === "" ? "#8a8a8a" : "black" }, // Cambia el color según el valor seleccionado
+              ]}
             >
               <Picker.Item label="Seleccione una carrera" value="" />
               {careers.map((career) => (
@@ -180,7 +203,10 @@ const AddCourse = () => {
             <Picker
               selectedValue={selectedSection}
               onValueChange={(itemValue) => setSelectedSection(itemValue)}
-              style={styles.inputSelectCustom}
+              style={[
+                styles.inputSelectCustom,
+                { color: selectedSection === "" ? "#8a8a8a" : "black" }, // Cambia el color según el valor seleccionado
+              ]}
             >
               <Picker.Item label="Seleccione una sección" value="" />
               {sections.map((section) => (
@@ -257,16 +283,18 @@ const AddCourse = () => {
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContainer}>
-            <Text style={styles.modalTitle}>Curso añadido con éxito</Text>
-            <Text style={styles.modalMessage}>
-              Ahora puedes verlo en Cursos
-            </Text>
             <TouchableOpacity
               style={styles.modalButton}
               onPress={handleCloseModal}
             >
-              <Text style={styles.modalButtonText}>Cerrar</Text>
+              <Icon name="x" size={20} color="#000" />
             </TouchableOpacity>
+
+            <Text style={styles.modalTitle}>Curso añadido con éxito</Text>
+            <Text style={styles.modalMessage}>
+              Ahora puedes verlo en Cursos
+            </Text>
+            
           </View>
         </View>
       </Modal>
@@ -292,16 +320,18 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 20,
     fontWeight: "bold",
-    marginBottom: 10,
+    marginBottom: 5,
+    marginTop: 20
   },
   modalMessage: {
     fontSize: 16,
     marginBottom: 20,
   },
   modalButton: {
-    padding: 10,
-    backgroundColor: "#8b2a30",
-    borderRadius: 5,
+    position: "absolute", 
+    top: 20,
+    right: 20,
+    zIndex: 10,
   },
   modalButtonText: {
     color: "white",
@@ -338,18 +368,19 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   input: {
+    fontSize: 16,
     height: 60,
     // borderWidth: 1,
     // borderRadius: 8,
     // borderColor: "#c6c6c6",
     backgroundColor: "white",
     marginBottom: 15,
-    paddingHorizontal: 10,
+    paddingHorizontal: 16,
     paddingVertical: 10,
   },
   label: {
     fontSize: 14,
-    color: "#8a8a8a",
+    color: "#000000",
     marginLeft: 5,
     marginBottom: 5, // Espaciado entre el label y el input
   },
@@ -362,6 +393,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 10,
     textAlignVertical: "top",
+    fontSize: 16,
+    paddingHorizontal: 16,
   },
   inputSelect: {
     height: 40,

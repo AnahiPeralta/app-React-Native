@@ -22,23 +22,23 @@ export default function Login(props) {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [generalError, setGeneralError] = useState("");
-  const [showPassword, setShowPassword] = useState(false); // Estado para manejar la visibilidad de la contraseña
+  const [showPassword, setShowPassword] = useState(false); 
 
   const handleLogin = () => {
     let valid = true;
     setEmailError("");
     setPasswordError("");
-    setGeneralError(""); // Resetear error general
+    setGeneralError(""); 
 
     // Validación de email
     if (!email) {
-      setEmailError("*El correo es obligatorio");
+      setEmailError("El correo es obligatorio");
       valid = false;
     }
 
     // Validación de contraseña
     if (!password) {
-      setPasswordError("*La contraseña es obligatoria");
+      setPasswordError("La contraseña es obligatoria");
       valid = false;
     } else if (password.length < 6) {
       setPasswordError("La contraseña debe tener al menos 6 caracteres");
@@ -78,7 +78,6 @@ export default function Login(props) {
       
       {/* Campo de correo */}
       <View style={styles.tarjeta}>
-        <Text style={styles.label}>Correo electrónico</Text>
         <TextInput
           placeholder="Ingresa tu correo electrónico"
           placeholderTextColor="#8a8a8a"
@@ -92,7 +91,6 @@ export default function Login(props) {
 
       {/* Campo de contraseña */}
       <View style={styles.tarjeta}>
-        <Text style={styles.label}>Contraseña</Text>
         <View style={styles.passwordContainer}>
           <TextInput
             placeholder="Ingresa tu contraseña"
@@ -164,11 +162,11 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   tarjeta: {
-    marginBottom: 20,
+    marginBottom: 10,
     backgroundColor: "white",
     borderRadius: 10,
     width: "80%",
-    padding: 15,
+    padding: 6,
     borderWidth: 1,
     borderColor: "#d5d5d5",
   },
@@ -179,15 +177,16 @@ const styles = StyleSheet.create({
   },
   textTitle: {
     fontSize: 28,
-    marginBottom: 30,
+    marginBottom: 20,
     marginTop: 15,
-  },
+ },
   cardButton: {
     backgroundColor: "#8b2a30",
     borderRadius: 10,
     width: "80%",
     paddingTop: 15,
     paddingBottom: 15,
+    marginTop: 5,
   },
   textButton: {
     color: "white",
@@ -197,8 +196,8 @@ const styles = StyleSheet.create({
   noAccountText: {
     color: "#111111",
     fontSize: 16,
-    marginTop: 40,
-    marginBottom: 15,
+    marginTop: 30,
+    marginBottom: 10,
     textAlign: "center",
   },
   registerButton: {
@@ -223,6 +222,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#333",
     marginBottom: 5,
+    textAlign: 'left',
+    width: '80%'
   },
   passwordContainer: {
     flexDirection: "row",

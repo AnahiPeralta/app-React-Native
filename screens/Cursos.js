@@ -113,12 +113,15 @@ export default function Cursos() {
           </View>
         </View>
       </View>
-      <TouchableOpacity
-        style={styles.addCourseButton}
-        onPress={() => navigation.navigate("AddCourse")}
-      >
-        <Text style={styles.addCourseText}>AddCourse</Text>
-      </TouchableOpacity>
+      <View style={styles.addCourseButtonContainer}>
+        <TouchableOpacity
+          style={styles.addCourseButton}
+          onPress={() => navigation.navigate("AddCourse")}
+        >
+          <Text style={styles.addCourseButtonText}>Añadir Curso</Text>
+        </TouchableOpacity>
+      </View>
+      
       {/* Cursos */}
       <ScrollView contentContainerStyle={styles.scrollContent} style={styles.scrollView}>
         <View style={styles.maxWidth}>
@@ -170,19 +173,24 @@ export default function Cursos() {
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContainer}>
-            <Text style={styles.modalText}>¿Estás seguro de que deseas eliminar este curso?</Text>
-            <View style={styles.buttonRow}>
+            <Text style={styles.modalTitle}>
+              Eliminar Curso
+            </Text>
+            <Text style={styles.modalMessage}>
+              ¿Estás seguro que quieres eliminar este curso?
+            </Text>
+            <View style={styles.modalButtons}>
               <TouchableOpacity
-                style={styles.cancelButton}
+                style={styles.modalButtonCancel}
                 onPress={() => setShowModal(false)}
               >
-                <Text style={styles.cancelText}>Cancelar</Text>
+                <Text style={styles.modalButtonText}>Cancelar</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={styles.confirmButton}
+                style={styles.modalButton}
                 onPress={() => deleteCourse(courseToDelete)}
               >
-                <Text style={styles.confirmText}>Eliminar</Text>
+                <Text style={styles.modalButtonText}>Eliminar</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -249,10 +257,12 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 18,
     fontWeight: "500",
-    marginBottom: 10,
+    marginBottom: 5,
   },
   modalMessage: {
-    textAlign: "center",
+    textAlign: "left",
+    paddingHorizontal: 10,
+    lineHeight: 18,
   },
   modalButtons: {
     flexDirection: "row",
@@ -287,6 +297,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     scrollbarWidth: "thin",
     scrollbarColor: "#c6c6c6 #e0e0e0",
+    marginTop: 10,
   },
 
   maxWidth: {
@@ -341,7 +352,7 @@ const styles = StyleSheet.create({
   },
   addCourseButtonContainer: {
     alignItems: "flex-end", // Alinea el botón a la derecha
-    marginRight: 30,
+    marginRight: 20,
   },
   addCourseButton: {
     backgroundColor: "#8b2a30",
@@ -352,9 +363,6 @@ const styles = StyleSheet.create({
   addCourseButtonText: {
     color: "white",
     fontSize: 16,
-  },
-  cardsContainer: {
-    marginTop: 10,
   },
   card: {
     flexDirection: "row",

@@ -12,6 +12,7 @@ import {
 import Navbar from "../Components/Navbar";
 import { db } from "../credenciales";
 import { Picker } from "@react-native-picker/picker";
+import Icon from "react-native-vector-icons/Feather";
 
 import {
   doc,
@@ -137,8 +138,8 @@ const EditCourse = ({ route, navigation }) => {
         carrer: selectedCareer,
         "section-carrer": selectedSection,
         description: description,
-        trackingSheet: trackingSheet,  
-        driveLink: driveLink,          
+        trackingSheet: trackingSheet,
+        driveLink: driveLink,
         manualsFolder: manualsFolder,
       });
 
@@ -189,7 +190,10 @@ const EditCourse = ({ route, navigation }) => {
             <Picker
               selectedValue={selectedTeacher}
               onValueChange={(itemValue) => setSelectedTeacher(itemValue)}
-              style={styles.inputSelectCustom}
+              style={[
+                styles.inputSelectCustom,
+                { color: selectedTeacher === "" ? "#8a8a8a" : "black" },
+              ]}
             >
               <Picker.Item label="Seleccione un profesor" value="" />
               {teachers.map((teacher) => (
@@ -207,7 +211,10 @@ const EditCourse = ({ route, navigation }) => {
             <Picker
               selectedValue={selectedCareer}
               onValueChange={(itemValue) => setSelectedCareer(itemValue)}
-              style={styles.inputSelectCustom}
+              style={[
+                styles.inputSelectCustom,
+                { color: selectedCareer === "" ? "#8a8a8a" : "black" },
+              ]}
             >
               <Picker.Item label="Seleccione una carrera" value="" />
               {careers.map((career) => (
@@ -225,7 +232,10 @@ const EditCourse = ({ route, navigation }) => {
             <Picker
               selectedValue={selectedSection}
               onValueChange={(itemValue) => setSelectedSection(itemValue)}
-              style={styles.inputSelectCustom}
+              style={[
+                styles.inputSelectCustom,
+                { color: selectedSection === "" ? "#8a8a8a" : "black" },
+              ]}
             >
               <Picker.Item label="Seleccione una sección" value="" />
               {sections.map((section) => (
@@ -238,7 +248,7 @@ const EditCourse = ({ route, navigation }) => {
             </Picker>
           </View>
           <View style={styles.inputContainer}>
-            <Text style={styles.label}>Hoja de seguimiento</Text>
+            <Text style={styles.label}>Planilla de seguimiento</Text>
             <TextInput
               style={styles.input}
               placeholder="Ingrese la hoja de seguimiento"
@@ -297,16 +307,16 @@ const EditCourse = ({ route, navigation }) => {
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContainer}>
-            <Text style={styles.modalTitle}>Cambios Guardados</Text>
-            <Text style={styles.modalMessage}>
-              Ahora puedes verlo en Cursos
-            </Text>
             <TouchableOpacity
               style={styles.modalButton}
               onPress={handleCloseModal}
             >
-              <Text style={styles.modalButtonText}>Cerrar</Text>
+              <Icon name="x" size={20} color="#000" />
             </TouchableOpacity>
+            <Text style={styles.modalTitle}>Cambios Guardados</Text>
+            <Text style={styles.modalMessage}>
+              Ahora puedes verlo en Cursos
+            </Text>
           </View>
         </View>
       </Modal>
@@ -322,29 +332,31 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    color: "#8a8a8a",
+    color: "#000000",
     marginLeft: 5,
     marginBottom: 5, // Espaciado entre el label y el input
   },
   input: {
-    height: 40,
-    borderWidth: 1,
-    borderRadius: 8,
-    borderColor: "#c6c6c6",
+    height: 60,
+    fontSize: 16,
+    // borderWidth: 1,
+    // borderRadius: 8,
+    // borderColor: "#c6c6c6",
     backgroundColor: "white",
     marginBottom: 15,
-    paddingHorizontal: 10,
+    paddingHorizontal: 16,
     paddingVertical: 10,
   },
   inputTextArea: {
     height: 150,
-    borderWidth: 1,
-    borderRadius: 8,
-    borderColor: "#c6c6c6",
+    // borderWidth: 1,
+    // borderRadius: 8,
+    // borderColor: "#c6c6c6",
     backgroundColor: "white",
     marginBottom: 15,
-    paddingHorizontal: 10,
+    paddingHorizontal: 16,
     paddingVertical: 10,
+    fontSize: 16,
     textAlignVertical: "top",
   },
   inputSelect: {
@@ -361,6 +373,20 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     color: "#8a8a8a",
   },
+
+  inputSelectCustom: {
+    borderWidth: 2,
+    borderRadius: 8,
+    borderColor: "#c6c6c6",
+    backgroundColor: "white",
+    marginBottom: 15,
+    paddingLeft: 5,
+    paddingRight: 5,
+    fontSize: 13,
+    boxSizing: "border-box",
+    color: "#8a8a8a",
+  },
+
   editCourseButton: {
     backgroundColor: "#8b2a30",
     paddingVertical: 15,
@@ -394,19 +420,21 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 20,
     fontWeight: "bold",
-    marginBottom: 10,
+    marginBottom: 5,
+    marginTop: 20
   },
   modalMessage: {
     fontSize: 16,
     marginBottom: 20,
   },
   modalButton: {
-    padding: 10,
-    backgroundColor: "#8b2a30",
-    borderRadius: 5,
+    position: "absolute", 
+    top: 20,
+    right: 20,
+    zIndex: 10,
   },
   modalButtonText: {
-    color: "white",
+    color: "#000000",
     fontSize: 16,
   },
 

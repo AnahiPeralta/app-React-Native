@@ -9,6 +9,7 @@ import {
   Modal,
   ActivityIndicator,
   Platform,
+  ScrollView
 } from "react-native";
 import { appFirebase, db } from "../credenciales";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
@@ -53,12 +54,12 @@ export default function Register() {
 
     // Validaciones
     if (!name) {
-      setNameError("*El nombre es obligatorio");
+      setNameError("El nombre es obligatorio");
       valid = false;
     }
 
     if (!email) {
-      setEmailError("*El correo es obligatorio");
+      setEmailError("El correo es obligatorio");
       valid = false;
     } else if (!/\S+@\S+\.\S+/.test(email)) {
       setEmailError("*El correo no es válido");
@@ -66,7 +67,7 @@ export default function Register() {
     }
 
     if (!password) {
-      setPasswordError("*La contraseña es obligatoria");
+      setPasswordError("La contraseña es obligatoria");
       valid = false;
     } else if (password.length < 6) {
       setPasswordError("La contraseña debe tener al menos 6 caracteres");
@@ -146,7 +147,11 @@ export default function Register() {
   };
 
   return (
-    <View style={styles.padre}>
+    <ScrollView
+      contentContainerStyle={styles.scrollContent}
+      style={styles.scrollView}
+    >
+<View style={styles.padre}>
       <View style={styles.imageContainer}>
         <Image source={require("../assets/logo_principal.png")} style={styles.profile} />
       </View>
@@ -154,9 +159,8 @@ export default function Register() {
 
       {nameError ? <Text style={styles.errorText}>{nameError}</Text> : null}
       <View style={styles.tarjeta}>
-        <Text style={styles.label}>Nombre de Usuario</Text>
         <TextInput
-          placeholder="Ingresa tu nombre de usuario"
+          placeholder="Ingresa tu nombre y apellido"
           placeholderTextColor="#8a8a8a"
           style={styles.inputStyle}
           value={name}
@@ -166,7 +170,6 @@ export default function Register() {
 
       {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
       <View style={styles.tarjeta}>
-        <Text style={styles.label}>Correo Electrónico</Text>
         <TextInput
           placeholder="Ingresa tu correo electrónico"
           placeholderTextColor="#8a8a8a"
@@ -178,7 +181,6 @@ export default function Register() {
 
       {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
       <View style={styles.tarjeta}>
-        <Text style={styles.label}>Contraseña</Text>
         <View style={styles.passwordContainer}>
           <TextInput
             placeholder="Ingresa tu contraseña"
@@ -202,20 +204,20 @@ export default function Register() {
             />
           </TouchableOpacity>
         </View>
-        {password && (
+      </View>
+      {password && (
           <View style={styles.passwordErrors}>
             <Text style={passwordStrength.minLength ? styles.valid : styles.invalid}>* Mínimo 6 caracteres</Text>
             <Text style={passwordStrength.hasUpperCase ? styles.valid : styles.invalid}>* Al menos una mayúscula</Text>
             <Text style={passwordStrength.hasNumber ? styles.valid : styles.invalid}>* Al menos un número</Text>
             <Text style={passwordStrength.hasSpecialChar ? styles.valid : styles.invalid}>* Al menos un carácter especial</Text>
           </View>
-        )}
-      </View>
+      )}
 
 
       {confirmPasswordError ? <Text style={styles.errorText}>{confirmPasswordError}</Text> : null}
+ 
       <View style={styles.tarjeta}>
-        <Text style={styles.label}>Confirmar Contraseña</Text>
         <View style={styles.passwordContainer}>
           <TextInput
             placeholder="Confirma tu contraseña"
@@ -236,12 +238,12 @@ export default function Register() {
             />
           </TouchableOpacity>
         </View>
-        {confirmPassword && confirmPassword !== password && (
-          <Text style={styles.passwordCriteria}>
-            <Text style={styles.invalid}>Las contraseñas no coinciden</Text>
-          </Text>
-        )}
       </View>
+      {confirmPassword && confirmPassword !== password && (
+          <Text style={styles.passwordCriteria}>
+            <Text style={styles.errorLabels}>Las contraseñas no coinciden</Text>
+          </Text>
+      )}
 
       <View style={styles.cardButton}>
         <TouchableOpacity onPress={handleRegister}>
@@ -271,6 +273,7 @@ export default function Register() {
         </View>
       </Modal>
     </View>
+    </ScrollView>
   );
 }
 
@@ -296,6 +299,7 @@ const styles = StyleSheet.create({
     shadowRadius: 15,
     elevation: 5,
     borderRadius: 100,
+    marginTop: 50,
   },
   profile: {
     width: 100,
@@ -303,11 +307,11 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   tarjeta: {
-    marginBottom: 20,
+    marginBottom: 10,
     backgroundColor: "white",
     borderRadius: 10,
     width: "80%",
-    padding: 15,
+    padding: 6,
     borderWidth: 1,
     borderColor: "#d5d5d5",
   },
@@ -318,8 +322,11 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    color: "#8a8a8a",
+    fontWeight: "bold",
+    color: "#333",
     marginBottom: 5,
+    textAlign: 'left',
+    width: '80%'
   },
   passwordContainer: {
     flexDirection: "row",
@@ -330,18 +337,28 @@ const styles = StyleSheet.create({
     right: 10,
   },
   passwordCriteria: {
-    fontSize: 12,
-    marginTop: 5,
+    fontSize: 13,
+    marginBottom: 5,
+    textAlign: 'left',
+    width: '80%'
+  },
+  passwordErrors: {
+    marginBottom: 5,
+    textAlign: 'left',
+    width: '80%'
   },
   valid: {
     color: "green",
   },
   invalid: {
+    color: "gray",
+  },
+  errorLabels: {
     color: "red",
   },
   textTitle: {
     fontSize: 28,
-    marginBottom: 30,
+    marginBottom: 20,
     marginTop: 15,
   },
   cardButton: {
@@ -350,6 +367,7 @@ const styles = StyleSheet.create({
     width: "80%",
     paddingTop: 15,
     paddingBottom: 15,
+    marginTop: 5,
   },
   textButton: {
     color: "white",
@@ -359,8 +377,8 @@ const styles = StyleSheet.create({
   noAccountText: {
     color: "#111111",
     fontSize: 16,
-    marginTop: 40,
-    marginBottom: 15,
+    marginTop: 30,
+    marginBottom: 10,
     textAlign: "center",
   },
   registerButton: {
@@ -370,6 +388,7 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
     borderWidth: 2,
     borderColor: "#8b2a30",
+    marginBottom: 50,
   },
   registerText: {
     color: "#8b2a30",
@@ -415,4 +434,10 @@ const styles = StyleSheet.create({
     textAlign: "left",
     width: "80%",
   },
+
+  scrollView: {
+    width: "100%",
+    alignSelf: "center",
+    scrollbarWidth: "thin",
+  }
 });

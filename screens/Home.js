@@ -126,19 +126,25 @@ export default function Home() {
                         <Text style={styles.cardTarjet}>
                           {course["carrer"]}
                         </Text>
-                        <Text style={styles.cardTitle}>
-                          {course["name-course"]}
-                        </Text>
-                        <Text style={styles.cardTeacher}>
-                          Profesor: {course["teacher"]}
-                        </Text>
                       </View>
-                      <View style={styles.cardButton}>
-                        <TouchableOpacity style={styles.accessButton}
-                          onPress={() => navigation.navigate('ViewMore', { courseId: course.id })}>
-                          <Text style={styles.accessText}>Acceder</Text>
-                        </TouchableOpacity>
+                      <View style={styles.cardFlex}>
+                        <View>
+                          <Text style={styles.cardTitle}>
+                            {course["name-course"]}
+                          </Text>
+                          <Text style={styles.cardTeacher}>
+                            Profesor: {course["teacher"]}
+                          </Text>
+                        </View>
+                        <View style={styles.cardButton}>
+                          <TouchableOpacity style={styles.accessButton}
+                            onPress={() => navigation.navigate('ViewMore', { courseId: course.id })}>
+                            <Text style={styles.accessText}>Acceder</Text>
+                          </TouchableOpacity>
+                        </View>
                       </View>
+
+
                     </View>
                   ))}
                 </View>
@@ -157,10 +163,10 @@ export default function Home() {
 const styles = StyleSheet.create({
   accessButton: {
     backgroundColor: "#8b2a30",
-    paddingVertical: 5,
+    paddingVertical: 7,
     borderRadius: 5,
-    paddingHorizontal: 50,
-    marginBottom: 10,
+    paddingHorizontal: 35,
+    marginRight: 10,
   },
   accessText: {
     color: "white",
@@ -181,11 +187,10 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     backgroundColor: "#008196",
     color: "white",
-    fontSize: 12,
-    width: 140,
+    fontSize: 13,
+    width: 170,
     textAlign: "center",
     borderRadius: 5,
-    marginBottom: 5,
   },
 
   cardsContent: {
@@ -307,4 +312,13 @@ const styles = StyleSheet.create({
     scrollbarWidth: "thin",
     scrollbarColor: "#c6c6c6 #e0e0e0",
   },
+
+  cardFlex: {
+    width: '100%',
+    paddingLeft: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 10
+  }
 });
